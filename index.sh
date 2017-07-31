@@ -28,8 +28,8 @@ function updateTcPlayerRepo() {
     nowWithSecond=$(date +%Y\-%m\-%d\ %H\:%M\:%S)
 
     cd "$TCPLAYER_REPO_PATH/TcPlayer"
-    git fetch origin master
-    git reset --hard origin/master
+    git fetch -q origin master
+    git reset -q --hard origin/master
     wget -q http://imgcache.qq.com/open/qcloud/video/vcplayer/TcPlayer.js -O TcPlayer.js
     printf "### AUTO UPDATE Tcplayer.js\n* auto update at $nowWithSecond, md5 $1\n\n" >> CHANGELOG.md
     git add TcPlayer.js CHANGELOG.md
