@@ -3,8 +3,8 @@
 GITHUB_REPO_PATH="$HOME/github"
 
 function checkTcPlayerRepo() {
-    tcMD5=$(curl -s http://imgcache.qq.com/open/qcloud/video/vcplayer/TcPlayer.js | md5)
-    githubMD5=$(curl -s https://raw.githubusercontent.com/duxiaofeng-github/TcPlayer/master/TcPlayer.js | md5)
+    tcMD5=$(curl -s http://imgcache.qq.com/open/qcloud/video/vcplayer/TcPlayer.js | md5sum | awk '{print $1}')
+    githubMD5=$(curl -s https://raw.githubusercontent.com/duxiaofeng-github/TcPlayer/master/TcPlayer.js | md5sum | awk '{print $1}')
     if [[ $tcMD5 != $githubMD5 ]]; then
         updateTcPlayerRepo $tcMD5
         updateTcPlayerNpm
