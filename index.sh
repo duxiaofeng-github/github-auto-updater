@@ -5,13 +5,15 @@ GITHUB_REPO_PATH="$HOME/github"
 function checkTcPlayerRepo() {
     tcMD5=$(curl -s http://imgcache.qq.com/open/qcloud/video/vcplayer/TcPlayer.js | md5sum | awk '{print $1}')
     githubMD5=$(curl -s https://raw.githubusercontent.com/duxiaofeng-github/TcPlayer/master/TcPlayer.js | md5sum | awk '{print $1}')
+    nowWithSecond=$(date +%Y\-%m\-%d\ %H\:%M\:%S)
+
     if [[ $tcMD5 != $githubMD5 ]]; then
         updateTcPlayerRepo $tcMD5
         updateTcPlayerNpm
         newVersion=$(git tag -l | tail -n 1)
-        echo "old: $githubMD5, new: $tcMD5, tags: $newVersion"
+        echo "$nowWithSecond old: $githubMD5, new: $tcMD5, tags: $newVersion"
     else
-        echo "tcplayer not changed"
+        echo "$nowWithSecond tcplayer not changed"
     fi
 }
 
