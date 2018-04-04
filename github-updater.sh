@@ -16,7 +16,7 @@ function checkTcPlayerRepo() {
     nowWithSecond=$(date +%Y\-%m\-%d\ %H\:%M\:%S)
 
     if [[ $tcMD5 != $githubMD5 ]]; then
-        updateTcPlayerRepo $tcUrl $tcMD5
+        updateTcPlayerRepo $tcUrl $tcMD5 $tcVer
         updateTcPlayerNpm $tcVer
         newVersion=$(git tag -l | tail -n 1)
         echo "$nowWithSecond old: $githubMD5, new: $tcMD5, tags: $newVersion"
@@ -41,7 +41,10 @@ function updateTcPlayerRepo() {
     git fetch -q origin master
     git reset -q --hard origin/master
     wget -q $1 -O TcPlayer.js
-    printf "### AUTO UPDATE Tcplayer.js\n* auto update at $nowWithSecond, md5 $2\n\n" >> CHANGELOG.md
+    printf "### AUTO UPDATE Tcplayer.js\n* auto update at $nowWithSecond, md5 $2, version: $3\n\n" >> CHANGELOG.md
+    README_TEMPLATE=$(cat README_TEMPLATE.md)
+    README_TEMPLATE=${README_TEMPLATE//\tcplayerUrlPlaceHolder/$1}
+    echo $README_TEMPLATE > README.md
     git add TcPlayer.js CHANGELOG.md
     git commit -q -m "update TcPlayer.js $now"
 
