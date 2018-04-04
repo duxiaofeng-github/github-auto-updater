@@ -3,13 +3,21 @@
 GITHUB_REPO_PATH="$HOME/github"
 
 function checkTcPlayerRepo() {
-    tcMD5=$(curl -s http://imgcache.qq.com/open/qcloud/video/vcplayer/TcPlayer.js | md5sum | awk '{print $1}')
+    tcUrl=$(python get-player-script-url.py)
+
+    if [[ $tcUrl == "" ]]; then
+        echo 'no url found'
+        exit 0
+    fi
+
+    tcMD5=$(curl -s $tcUrl | md5sum | awk '{print $1}')
+    tcVer=$(echo $tcUrl | awk -F '-' '{print $2}' | awk -F '.js' '{print $1}')
     githubMD5=$(curl -s https://raw.githubusercontent.com/duxiaofeng-github/TcPlayer/master/TcPlayer.js | md5sum | awk '{print $1}')
     nowWithSecond=$(date +%Y\-%m\-%d\ %H\:%M\:%S)
 
     if [[ $tcMD5 != $githubMD5 ]]; then
-        updateTcPlayerRepo $tcMD5
-        updateTcPlayerNpm
+        updateTcPlayerRepo $tcUrl $tcMD5
+        updateTcPlayerNpm $tcVer
         newVersion=$(git tag -l | tail -n 1)
         echo "$nowWithSecond old: $githubMD5, new: $tcMD5, tags: $newVersion"
     else
@@ -32,8 +40,8 @@ function updateTcPlayerRepo() {
     cd "$TCPLAYER_REPO_PATH/TcPlayer"
     git fetch -q origin master
     git reset -q --hard origin/master
-    wget -q http://imgcache.qq.com/open/qcloud/video/vcplayer/TcPlayer.js -O TcPlayer.js
-    printf "### AUTO UPDATE Tcplayer.js\n* auto update at $nowWithSecond, md5 $1\n\n" >> CHANGELOG.md
+    wget -q $1 -O TcPlayer.js
+    printf "### AUTO UPDATE Tcplayer.js\n* auto update at $nowWithSecond, md5 $2\n\n" >> CHANGELOG.md
     git add TcPlayer.js CHANGELOG.md
     git commit -q -m "update TcPlayer.js $now"
 
@@ -41,7 +49,7 @@ function updateTcPlayerRepo() {
 }
 
 function updateTcPlayerNpm() {
-    npm version patch
+    npm version $1
     npm publish
     git push -q --tags
 }
