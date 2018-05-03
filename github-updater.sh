@@ -45,7 +45,7 @@ function updateTcPlayerRepo() {
     README_TEMPLATE=$(cat README_TEMPLATE.md)
     README_TEMPLATE=${README_TEMPLATE//\tcplayerUrlPlaceHolder/$1}
     echo $README_TEMPLATE > README.md
-    git add TcPlayer.js CHANGELOG.md
+    git add TcPlayer.js CHANGELOG.md README.md
     git commit -q -m "update TcPlayer.js $now"
 
     git push -q
